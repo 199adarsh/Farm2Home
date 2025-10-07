@@ -17,8 +17,14 @@ class FirebaseConfig:
         try:
             # Check if Firebase is already initialized
             if not firebase_admin._apps:
-                # Use service account key file or environment variables
-                if os.path.exists('firebase-service-account.json'):
+                # Try environment variables first (for Vercel)
+                if os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON'):
+                    import json
+                    cred_dict = json.loads(os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON'))
+                    self.cred = credentials.Certificate(cred_dict)
+                    firebase_admin.initialize_app(self.cred)
+                    print("Firebase initialized with environment variables!")
+                elif os.path.exists('firebase-service-account.json'):
                     self.cred = credentials.Certificate('firebase-service-account.json')
                     firebase_admin.initialize_app(self.cred)
                     print("Firebase initialized with service account file!")
