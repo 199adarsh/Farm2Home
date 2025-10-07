@@ -85,27 +85,46 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-# Initialize Firebase
-try:
-    firebase.initialize_firebase()
-    print("Firebase initialized successfully!")
-except Exception as e:
-    print(f"Firebase initialization failed: {e}")
-    print("Continuing with SQLAlchemy fallback...")
+# Initialize Firebase (lazy initialization for serverless)
+firebase_initialized = False
+firestore_user = None
+firestore_product = None
+firestore_order = None
+firestore_order_item = None
+firestore_notification = None
+firestore_bulk_order = None
 
-# Initialize Firestore models
-firestore_user = FirestoreUser()
-firestore_product = FirestoreProduct()
-firestore_order = FirestoreOrder()
-firestore_order_item = FirestoreOrderItem()
-firestore_notification = FirestoreNotification()
-firestore_bulk_order = FirestoreBulkOrder()
+def initialize_firebase_if_needed():
+    global firebase_initialized, firestore_user, firestore_product, firestore_order, firestore_order_item, firestore_notification, firestore_bulk_order
+    
+    if not firebase_initialized:
+        try:
+            firebase.initialize_firebase()
+            print("Firebase initialized successfully!")
+            firebase_initialized = True
+            
+            # Initialize Firestore models
+            firestore_user = FirestoreUser()
+            firestore_product = FirestoreProduct()
+            firestore_order = FirestoreOrder()
+            firestore_order_item = FirestoreOrderItem()
+            firestore_notification = FirestoreNotification()
+            firestore_bulk_order = FirestoreBulkOrder()
+        except Exception as e:
+            print(f"Firebase initialization failed: {e}")
+            print("Continuing with SQLAlchemy fallback...")
+            firebase_initialized = True  # Mark as attempted to avoid retries
 
 # Create upload folder if it doesn't exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Set Jinja2 global for CSRF token after app is defined
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
+
+# Initialize Firebase on first request (serverless-friendly)
+@app.before_request
+def before_request():
+    initialize_firebase_if_needed()
 
 def get_product_image(product_name, image_filename=None):
     """Get the appropriate image for a product based on its name."""
@@ -2340,7 +2359,25 @@ app.register_blueprint(farmer_bp)
 # =============================================================================
 # APPLICATION ENTRY POINT
 # =============================================================================
+def create_tables():
+    """Create database tables if they don't exist."""
+    try:
+        with app.app_context():
+            db.create_all()
+    except Exception as e:
+        print(f"Database initialization error: {e}")
+
+# Add a simple health check endpoint
+@app.route('/health')
+def health_check():
+    return jsonify({
+        'status': 'healthy',
+        'message': 'Farm2Home API is running',
+        'timestamp': datetime.now().isoformat()
+    })
+
+# Initialize database tables
+create_tables()
+
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
