@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farm2Home</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDK -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+      import {
+        getAuth,
+        signInWithEmailAndPassword,
+        createUserWithEmailAndPassword,
+        signInWithPopup,
+        GoogleAuthProvider,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCU6V1v4WfvUt6_Phg8SIajJYE8HMdLJA4",
+        authDomain: "farm2home-d0fb2.firebaseapp.com",
+        projectId: "farm2home-d0fb2",
+        storageBucket: "farm2home-d0fb2.firebasestorage.app",
+        messagingSenderId: "590976254739",
+        appId: "1:590976254739:web:90c9fd497ef91a751310e6",
+        measurementId: "G-P26481CVYF"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
+
+      // Make auth available globally
+      window.firebaseAuth = auth;
+      window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+      window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+      window.signInWithPopup = signInWithPopup;
+      window.GoogleAuthProvider = GoogleAuthProvider;
+      
+      console.log("Firebase initialized successfully!");
+    </script>
+    <style>
+      /* Custom CSS for fine-tuning and specific elements not easily covered by Tailwind */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8f8f8; /* Light off-white background */
+      }
+
+      .header-nav-link {
+        color: #333; /* Dark gray for navigation links */
+        font-weight: 500;
+      }
+
+      .header-nav-link.active {
+        color: #4caf50; /* Green for active/organic link */
+        font-weight: 600;
+      }
+
+      .main-heading {
+        font-size: 3.5rem; /* Large heading size */
+        line-height: 1.1;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .sub-text {
+        color: #666; /* Medium gray for sub-text */
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+
+      .browse-button {
+        background-color: #4caf50; /* Green button */
+        color: white;
+        font-weight: 600;
+        padding: 0.8rem 1.8rem;
+        border-radius: 0.5rem;
+        transition: background-color 0.3s ease;
+      }
+
+      .browse-button:hover {
+        background-color: #45a049; /* Darker green on hover */
+      }
+
+      .stats-number {
+        font-size: 2.5rem; /* Large number size */
+        font-weight: 700;
+        color: #333;
+      }
+
+      .stats-label {
+        color: #666;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      /* Styles for single image containers */
+      .single-image-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden; /* Ensure rounded corners apply */
+      }
+
+      .single-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Cover the container */
+        border-radius: 1.5rem; /* Rounded corners for the image */
+      }
+
+      .image-border-top-left,
+      .image-border-top-right {
+        position: absolute;
+        width: 30px; /* Size of the border element */
+        height: 30px;
+        border: 4px solid #4caf50; /* Green border */
+        border-radius: 50%; /* Circular shape */
+      }
+
+      .image-border-top-left {
+        top: -15px; /* Half of width/height to center on corner */
+        left: -15px;
+        border-bottom-color: transparent;
+        border-right-color: transparent;
+      }
+
+      .image-border-top-right {
+        top: -15px;
+        right: -15px;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+      }
+
+      /* New section specific styles */
+      .section-heading {
+        font-size: 3rem; /* Slightly smaller than main heading */
+        line-height: 1.1;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .star-rating {
+        color: #ffd700; /* Gold color for stars */
+        font-size: 1.5rem;
+      }
+
+      .testimonial-heading {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .testimonial-text {
+        font-size: 1rem;
+        color: #666;
+        line-height: 1.5;
+      }
+
+      .author-name {
+        font-weight: 600;
+        color: #333;
+      }
+
+      .author-location {
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      /* Styles for the new section's overlaid images */
+      .stacked-images-container {
+        position: relative;
+        width: 100%;
+        max-width: 550px; /* Adjust max-width to accommodate both images */
+        height: 600px; /* Adjust height to accommodate both images */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .stacked-images-container .base-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        max-width: 500px; /* Main image size */
+        max-height: 550px;
+        border-radius: 1.5rem;
+        object-fit: cover;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+      }
+
+      .stacked-images-container .overlay-image {
+        position: absolute;
+        width: 80%; /* Smaller image size relative to base */
+        height: auto; /* Maintain aspect ratio */
+        max-width: 400px; /* Max width for the overlay image */
+        max-height: 450px;
+        border-radius: 1.5rem;
+        object-fit: cover;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+        top: 45%; /* Adjust vertical position */
+        left: 50%; /* Adjust horizontal position */
+        transform: translate(-50%, -50%); /* Center the image then offset */
+        z-index: 20; /* Ensure it's on top */
+      }
+
+      /* Decorative squiggles for the new section */
+      .decorative-squiggle-1 {
+        position: absolute;
+        top: 10%;
+        left: -5%;
+        width: 80px;
+        height: 80px;
+        transform: rotate(20deg);
+        z-index: 10;
+      }
+
+      .decorative-squiggle-2 {
+        position: absolute;
+        bottom: 15%;
+        right: -10%;
+        width: 100px;
+        height: 100px;
+        transform: rotate(-30deg);
+        z-index: 10;
+      }
+
+      /* Form-specific styles */
+      .auth-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 1rem; /* Increased padding for more breathing room */
+        background-color: #f8f8f8; /* Match body background */
+      }
+
+      .auth-logo {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #4caf50; /* Green color for the logo */
+        margin-bottom: 2rem;
+        text-decoration: none;
+      }
+
+      .auth-form {
+        background-color: #ffffff;
+        padding: 2.5rem; /* Increased padding */
+        border-radius: 1.5rem; /* More rounded corners */
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+          0 4px 10px -2px rgba(0, 0, 0, 0.04); /* Stronger shadow */
+        width: 100%;
+        max-width: 450px; /* Max width for forms */
+        display: none; /* Hidden by default, managed by JS */
+        margin-bottom: 2rem; /* Space below the form */
+      }
+
+      .auth-form h2 {
+        font-size: 2rem; /* Larger heading for forms */
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 1.5rem; /* Space below heading */
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 1.25rem; /* More space between form groups */
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #555;
+        font-size: 0.95rem;
+      }
+
+      .form-group input[type="text"],
+      .form-group input[type="email"],
+      .form-group input[type="tel"],
+      .form-group input[type="password"],
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.85rem 1rem; /* Slightly more padding */
+        border: 1px solid #ddd; /* Lighter border */
+        border-radius: 0.5rem; /* Rounded input fields */
+        font-size: 1rem;
+        color: #333;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #4caf50; /* Green focus border */
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); /* Light green glow on focus */
+      }
+
+      .form-group textarea {
+        min-height: 80px; /* Set a minimum height for textareas */
+        resize: vertical; /* Allow vertical resizing */
+      }
+
+      .form-group input[type="file"] {
+        padding: 0.5rem 0;
+      }
+
+      .form-link {
+        text-align: right;
+        margin-bottom: 1.5rem;
+      }
+
+      .form-link a {
+        color: #4caf50;
+        font-weight: 500;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+      }
+
+      .form-link a:hover {
+        color: #45a049;
+        text-decoration: underline;
+      }
+
+      .auth-button {
+        background-color: #4caf50;
+        color: white;
+        font-weight: 600;
+        padding: 0.9rem 1.8rem; /* Larger button */
+        border-radius: 0.5rem;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        font-size: 1.1rem; /* Larger font size */
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.2); /* Button shadow */
+      }
+
+      .auth-button:hover {
+        background-color: #45a049;
+        transform: translateY(-2px); /* Slight lift on hover */
+      }
+
+      .switch-form-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #666;
+        font-size: 0.95rem;
+      }
+
+      .switch-form-link a {
+        color: #4caf50;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .switch-form-link a:hover {
+        color: #45a049;
+        text-decoration: underline;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1024px) {
+        .main-heading {
+          font-size: 3rem;
+        }
+        .stats-number {
+          font-size: 2rem;
+        }
+        .section-heading {
+          font-size: 2.5rem;
+        }
+        .stacked-images-container {
+          max-width: 450px;
+          height: 500px;
+        }
+        .stacked-images-container .base-image {
+          max-width: 400px;
+          max-height: 450px;
+        }
+        .stacked-images-container .overlay-image {
+          max-width: 350px;
+          max-height: 400px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .main-heading,
+        .section-heading {
+          font-size: 2.5rem;
+          text-align: center;
+        }
+        .sub-text {
+          text-align: center;
+        }
+        .browse-button {
+          width: fit-content;
+          margin: 0 auto; /* Center button on mobile */
+        }
+        .hero-content-left,
+        .section-content-right {
+          padding-right: 0;
+        }
+        .hero-image-right,
+        .section-image-left {
+          margin-top: 2rem;
+        }
+        .stats-section {
+          flex-direction: column;
+          align-items: center;
+          gap: 1.5rem;
+        }
+        .section-content-right {
+          align-items: center; /* Center content on mobile */
+        }
+        .testimonial-text,
+        .testimonial-heading {
+          text-align: center;
+        }
+        .author-info {
+          justify-content: center; /* Center author info */
+        }
+        .decorative-squiggle-1,
+        .decorative-squiggle-2 {
+          display: none; /* Hide complex squiggles on small screens */
+        }
+        .stacked-images-container {
+          max-width: 350px;
+          height: 400px;
+        }
+        .stacked-images-container .base-image {
+          max-width: 300px;
+          max-height: 350px;
+        }
+        .stacked-images-container .overlay-image {
+          max-width: 250px;
+          max-height: 300px;
+        }
+        .auth-form {
+          padding: 2rem 1.5rem; /* Adjust padding for smaller screens */
+        }
+        .auth-form h2 {
+          font-size: 1.75rem;
+        }
+        .auth-logo {
+          font-size: 1.75rem;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .header-logo {
+          font-size: 1.2rem;
+        }
+        .header-nav {
+          display: none; /* Hide nav on small screens, could add a hamburger menu */
+        }
+        .header-actions {
+          gap: 0.5rem;
+        }
+        .header-actions .px-4 {
+          padding-left: 0.75rem;
+          padding-right: 0.75rem;
+        }
+        .main-heading,
+        .section-heading {
+          font-size: 2rem;
+        }
+        .sub-text,
+        .testimonial-text {
+          font-size: 0.9rem;
+        }
+        .auth-container {
+          padding: 2rem 0.5rem;
+        }
+        .auth-form {
+          padding: 1.5rem 1rem;
+        }
+        .auth-form h2 {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header
+      class="flex justify-between items-center py-6 px-8 md:px-16 lg:px-24"
+    >
+      <div class="flex items-center space-x-8">
+        <div class="header-logo text-xl font-bold text-gray-800">FARM2HOME</div>
+        <nav class="header-nav hidden md:flex space-x-6">
+          <a href="#" class="header-nav-link active">Organic</a>
+          <a href="#" class="header-nav-link">Retail Orders</a>
+          <a href="#" class="header-nav-link">Prices</a>
+          <a href="#" class="header-nav-link">About Farm2Home</a>
+        </nav>
+      </div>
+      <div class="header-actions flex items-center space-x-4">
+        <a
+          href="#"
+          onclick="showLoginForm(true)"
+          class="text-gray-700 font-medium text-sm md:text-base"
+          >Sign in</a
+        >
+        <a
+          href="#"
+          onclick="showRegisterForm(true)"
+          class="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold text-sm md:text-base shadow-md hover:bg-green-600 transition duration-300"
+          >Create free account</a
+        >
+      </div>
+    </header>
+
+    <main
+      class="flex-grow flex flex-col items-center justify-center py-8 px-8 md:px-16 lg:px-24"
+    >
+      <div
+        class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24"
+      >
+        <div class="hero-content-left flex flex-col items-start lg:pr-16">
+          <h1 class="main-heading mb-6">
+            Bringing Fresh <br />
+            from Farm to <br />
+            Your Front Door
+          </h1>
+          <p class="sub-text mb-8 max-w-md">
+            Order directly from local farmers and enjoy the season's best
+            produce always fresh, always fair
+          </p>
+          <a href="#" class="browse-button shadow-lg hover:shadow-xl">
+            Browse Fresh Picks
+          </a>
+
+          <div
+            class="stats-section flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-16 mt-12"
+          >
+            <div class="flex flex-col items-start">
+              <span class="stats-number">2950+</span>
+              <span class="stats-label"
+                >Orders <br />
+                Delivered</span
+              >
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="stats-number">100%</span>
+              <span class="stats-label"
+                >Pure <br />
+                Vegetables</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-image-right flex justify-center items-center relative">
+          <img
+            src="{{ url_for('static', filename='img/Illustration.png') }}"
+            alt="Man with fresh produce"
+            width="70%"
+          />
+        </div>
+      </div>
+
+      <div
+        class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center py-16"
+      >
+        <div
+          class="section-image-left flex justify-center items-center relative lg:order-1"
+        >
+          <img
+            src="{{ url_for('static', filename='img/Group 11.png') }}"
+            alt="Man  fresh produce"
+            width="80%"
+          />
+        </div>
+
+        <div
+          class="section-content-right flex flex-col items-start lg:pl-16 lg:order-2"
+        >
+          <h2 class="section-heading mb-6">
+            From Local Farms <br />
+            Straight to Your <br />
+            Table
+          </h2>
+          <p class="sub-text mb-8 max-w-md">
+            Choose from a hand-picked selection of seasonal fruits and veggies
+            sustainably grown by nearby farmers
+          </p>
+
+          <div class="star-rating mb-4">★★★★★</div>
+
+          <p class="testimonial-heading mb-2">
+            Our Community Loves Us !!! ★★★★★
+          </p>
+          <p class="testimonial-text mb-4 max-w-md">
+            "The vegetables arrived pure and organic like It just came off the
+            farm. I won't buy veggies anywhere else!""
+          </p>
+
+          <div class="author-info flex items-center space-x-3">
+            <div>
+              <p class="author-name">Anand K</p>
+              <p class="author-location">Bengaluru</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="auth-container">
+      <a href="#" class="auth-logo">Your farm-fresh experience awaits</a>
+
+      <div class="auth-form login-form">
+        <h2>Login</h2>
+        <form action="/login" method="POST">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
+          <div class="form-group">
+            <label for="loginUsername">Username</label>
+            <input
+              type="text"
+              id="loginUsername"
+              name="username"
+              placeholder="Enter Username"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input
+              type="password"
+              id="loginPassword"
+              name="password"
+              placeholder="Enter Password"
+              required
+            />
+          </div>
+          <div class="form-link">
+            <a href="#">Forgot Password?</a>
+          </div>
+          <button type="submit" class="auth-button">Login</button>
+        </form>
+
+        <!-- Firebase Authentication Buttons -->
+        <div
+          class="firebase-auth-section"
+          style="margin-top: 20px; text-align: center"
+        >
+          <div style="margin: 15px 0; color: #666">Or login with</div>
+          <button
+            type="button"
+            onclick="signInWithGoogle()"
+            class="google-signin-btn"
+            style="
+              background: #4285f4;
+              color: white;
+              border: none;
+              padding: 10px 20px;
+              border-radius: 5px;
+              cursor: pointer;
+              margin: 5px;
+              display: inline-flex;
+              align-items: center;
+              gap: 8px;
+            "
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="currentColor"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="currentColor"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              />
+              <path
+                fill="currentColor"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              />
+            </svg>
+            Google
+          </button>
+        </div>
+
+        <div class="switch-form-link">
+          Don't have an account?
+          <a href="#" onclick="showRegisterForm()">Register</a>
+        </div>
+      </div>
+
+      <div class="auth-form register-form">
+        <h2>Register</h2>
+        <form action="/register" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
+          <div class="form-group">
+            <label for="registerUsername">Username</label>
+            <input
+              type="text"
+              id="registerUsername"
+              name="username"
+              placeholder="username"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerName">Full Name</label>
+            <input
+              type="text"
+              id="registerName"
+              name="name"
+              placeholder="Enter your Full Name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerEmail">Email</label>
+            <input
+              type="email"
+              id="registerEmail"
+              name="email"
+              placeholder="your.email@example.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerPhone">Phone</label>
+            <input
+              type="tel"
+              id="registerPhone"
+              name="phone"
+              placeholder="+1234567890"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerAddress">Address</label>
+            <input
+              type="text"
+              id="registerAddress"
+              name="address"
+              placeholder="Your address"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerRole">Role</label>
+            <select id="registerRole" name="role" required>
+              <option value="">Select Role</option>
+              <option value="customer">Customer</option>
+              <option value="farmer">Farmer</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Password</label>
+            <input
+              type="password"
+              id="registerPassword"
+              name="password"
+              placeholder="Enter Password"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirm_password"
+              placeholder="Confirm Password"
+              required
+            />
+          </div>
+
+          <div id="farmerFields" style="display: none">
+            <div class="form-group">
+              <label for="farmName">Farm Name</label>
+              <input
+                type="text"
+                id="farmName"
+                name="farm_name"
+                placeholder="Farm Name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="farmDescription">Farm Location</label>
+              <textarea
+                id="farmDescription"
+                name="farm_description"
+                placeholder="Enter your farm Location"
+              ></textarea>
+            </div>
+          </div>
+
+          <div id="customerFields" style="display: none">
+            <div class="form-group">
+              <label for="deliveryAddress">Delivery Address</label>
+              <input
+                type="text"
+                id="deliveryAddress"
+                name="delivery_address"
+                placeholder="Delivery Address"
+              />
+            </div>
+            <div class="form-group">
+              <label for="pinCode">Pin Code</label>
+              <input
+                type="text"
+                id="pinCode"
+                name="pin_code"
+                placeholder="123456"
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="auth-button">Register</button>
+        </form>
+        <div class="switch-form-link">
+          Already have an account?
+          <a href="#" onclick="showLoginForm()">Login</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Firebase Authentication Functions
+      async function signInWithFirebase(email, password) {
+        try {
+          const userCredential = await window.signInWithEmailAndPassword(
+            window.firebaseAuth,
+            email,
+            password
+          );
+          const user = userCredential.user;
+          const token = await user.getIdToken();
+
+          // Send token to backend
+          const response = await fetch("/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              firebase_token: token,
+            }),
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            window.location.href = result.redirect;
+          } else {
+            alert("Login failed: " + result.error);
+          }
+        } catch (error) {
+          console.error("Firebase login error:", error);
+          alert("Login failed: " + error.message);
+        }
+      }
+
+      async function signUpWithFirebase(email, password, userData) {
+        try {
+          const userCredential = await window.createUserWithEmailAndPassword(
+            window.firebaseAuth,
+            email,
+            password
+          );
+          const user = userCredential.user;
+          const token = await user.getIdToken();
+
+          // Send token and user data to backend
+          const response = await fetch("/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              firebase_token: token,
+              ...userData,
+            }),
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            alert("Registration successful! Please login.");
+            showLoginForm();
+          } else {
+            alert("Registration failed: " + result.error);
+          }
+        } catch (error) {
+          console.error("Firebase registration error:", error);
+          alert("Registration failed: " + error.message);
+        }
+      }
+
+      async function signInWithGoogle() {
+        try {
+          const provider = new window.GoogleAuthProvider();
+          const result = await window.signInWithPopup(
+            window.firebaseAuth,
+            provider
+          );
+          const user = result.user;
+          const token = await user.getIdToken();
+
+          // Send token to backend
+          const response = await fetch("/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              firebase_token: token,
+            }),
+          });
+
+          const loginResult = await response.json();
+          if (loginResult.success) {
+            window.location.href = loginResult.redirect;
+          } else {
+            // User might not be registered, try to register them
+            const registerResponse = await fetch("/register", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                firebase_token: token,
+                username: user.email.split("@")[0],
+                name: user.displayName || user.email,
+                role: "customer",
+              }),
+            });
+
+            const registerResult = await registerResponse.json();
+            if (registerResult.success) {
+              window.location.href = loginResult.redirect;
+            } else {
+              alert("Login failed: " + registerResult.error);
+            }
+          }
+        } catch (error) {
+          console.error("Google sign-in error:", error);
+          alert("Google sign-in failed: " + error.message);
+        }
+      }
+
+      // Note: For a real application, form switching would be handled by JavaScript.
+      // This is a simple example to demonstrate the two forms within one HTML.
+      function showRegisterForm(scrollToForm = false) {
+        document.querySelector(".login-form").style.display = "none";
+        document.querySelector(".register-form").style.display = "block";
+        // Only scroll if explicitly requested (from header buttons)
+        if (scrollToForm) {
+          document
+            .querySelector(".auth-container")
+            .scrollIntoView({ behavior: "smooth" });
+        }
+      }
+
+      function showLoginForm() {
+        document.querySelector(".register-form").style.display = "none";
+        document.querySelector(".login-form").style.display = "block";
+      }
+
+      function showLoginForm(scrollToForm = false) {
+        document.querySelector(".register-form").style.display = "none";
+        document.querySelector(".login-form").style.display = "block";
+        // Only scroll if explicitly requested (from header buttons)
+        if (scrollToForm) {
+          document
+            .querySelector(".auth-container")
+            .scrollIntoView({ behavior: "smooth" });
+        }
+      }
+
+      // Handle role selection to show/hide specific fields
+      function handleRoleChange() {
+        const roleSelect = document.getElementById("registerRole");
+        const farmerFields = document.getElementById("farmerFields");
+        const customerFields = document.getElementById("customerFields");
+
+        if (roleSelect.value === "farmer") {
+          farmerFields.style.display = "block";
+          customerFields.style.display = "none";
+          // Make farmer fields required
+          farmerFields.querySelectorAll("input, textarea").forEach((field) => {
+            if (field.name === "id_verification") field.required = true;
+          });
+          customerFields.querySelectorAll("input").forEach((field) => {
+            field.required = false;
+          });
+        } else if (roleSelect.value === "customer") {
+          farmerFields.style.display = "none";
+          customerFields.style.display = "block";
+          // Make customer fields required
+          customerFields.querySelectorAll("input").forEach((field) => {
+            field.required = true;
+          });
+          farmerFields.querySelectorAll("input, textarea").forEach((field) => {
+            field.required = false;
+          });
+        } else {
+          farmerFields.style.display = "none";
+          customerFields.style.display = "none";
+          // Remove required from all role-specific fields
+          farmerFields.querySelectorAll("input, textarea").forEach((field) => {
+            field.required = false;
+          });
+          customerFields.querySelectorAll("input").forEach((field) => {
+            field.required = false;
+          });
+        }
+      }
+
+      // Form validation
+      function validateRegisterForm() {
+        const password = document.getElementById("registerPassword").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+        if (password !== confirmPassword) {
+          alert("Passwords do not match!");
+          return false;
+        }
+
+        if (password.length < 6) {
+          alert("Password must be at least 6 characters long!");
+          return false;
+        }
+
+        return true;
+      }
+
+      // Initially show the login form
+      document.addEventListener("DOMContentLoaded", () => {
+        showLoginForm();
+
+        // Add event listeners
+        const roleSelect = document.getElementById("registerRole");
+        if (roleSelect) {
+          roleSelect.addEventListener("change", handleRoleChange);
+        }
+
+        const registerForm = document.querySelector(".register-form form");
+        if (registerForm) {
+          registerForm.addEventListener("submit", function (e) {
+            if (!validateRegisterForm()) {
+              e.preventDefault();
+            }
+          });
+        }
+      });
+    </script>
+
+    <footer class="py-4 text-center text-gray-500 text-sm">
+      &copy; 2025 Farm2Home. All rights reserved.
+    </footer>
+  </body>
+</html>

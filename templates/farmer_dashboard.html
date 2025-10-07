@@ -1,0 +1,2394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farmer Dashboard - Farm2Home</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #2e7d32;
+        --primary-light: #4caf50;
+        --primary-dark: #1b5e20;
+        --secondary: #ff8f00;
+        --earth: #8d6e63;
+        --earth-light: #a1887f;
+        --surface: #ffffff;
+        --surface-variant: #f5f5f5;
+        --background: #fafafa;
+        --on-surface: #212121;
+        --on-surface-variant: #757575;
+        --outline: #e0e0e0;
+        --error: #d32f2f;
+        --success: #388e3c;
+        --warning: #f57c00;
+        --info: #1976d2;
+        --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        --shadow-2: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+        --shadow-3: 0 10px 20px rgba(0, 0, 0, 0.19),
+          0 6px 6px rgba(0, 0, 0, 0.23);
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: var(--background);
+        color: var(--on-surface);
+        line-height: 1.5;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .dashboard-container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background: var(--surface);
+        border-right: 1px solid var(--outline);
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 100;
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-header {
+        padding: 24px;
+        border-bottom: 1px solid var(--outline);
+        background: var(--surface);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .logo-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--on-surface);
+        letter-spacing: -0.02em;
+      }
+
+      .logo-subtitle {
+        font-size: 12px;
+        color: var(--on-surface-variant);
+        font-weight: 400;
+      }
+
+      .sidebar-nav {
+        padding: 8px 0;
+      }
+
+      .nav-section {
+        margin-bottom: 24px;
+      }
+
+      .nav-section-title {
+        padding: 0 24px 8px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--on-surface-variant);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 24px;
+        color: var(--on-surface-variant);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        margin: 4px 12px;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .nav-item:hover {
+        background: var(--surface-variant);
+        color: var(--on-surface);
+      }
+
+      .nav-item.active {
+        background: var(--primary);
+        color: white;
+        box-shadow: var(--shadow-1);
+      }
+
+      .nav-icon {
+        width: 20px;
+        text-align: center;
+        font-size: 18px;
+      }
+
+      .nav-text {
+        font-weight: 500;
+      }
+
+      .main-content {
+        flex: 1;
+        margin-left: 280px;
+        background: var(--background);
+        min-height: 100vh;
+      }
+
+      .top-bar {
+        background: var(--surface);
+        border-bottom: 1px solid var(--outline);
+        padding: 16px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--on-surface);
+        letter-spacing: -0.02em;
+      }
+
+      .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .user-info {
+        text-align: right;
+      }
+
+      .user-name {
+        font-weight: 500;
+        color: var(--on-surface);
+        font-size: 14px;
+      }
+
+      .user-role {
+        font-size: 12px;
+        color: var(--on-surface-variant);
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+      }
+
+      .logout-btn {
+        width: 40px;
+        height: 40px;
+        background: var(--error);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        margin-left: 8px;
+      }
+
+      .logout-btn:hover {
+        background: #b71c1c;
+        transform: scale(1.05);
+      }
+
+      .content-area {
+        padding: 2rem;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .stats-grid {
+        display: grid;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      @media (min-width: 640px) {
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .stats-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .stat-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        transition: all 0.3s;
+      }
+
+      .stat-card:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transform: translateY(-0.125rem);
+      }
+
+      .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+      }
+
+      .stat-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+      }
+
+      .stat-icon.green {
+        background: var(--primary);
+      }
+
+      .stat-icon.blue {
+        background: var(--info);
+      }
+
+      .stat-icon.orange {
+        background: var(--secondary);
+      }
+
+      .stat-trend {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .stat-trend.up {
+        color: var(--primary);
+      }
+
+      .stat-trend.down {
+        color: var(--error);
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--on-surface);
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        color: var(--on-surface-variant);
+      }
+
+      .main-sections {
+        display: grid;
+        gap: 2rem;
+      }
+
+      @media (min-width: 1024px) {
+        .main-sections {
+          grid-template-columns: 2fr 1fr;
+        }
+      }
+
+      .add-product-section {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+      }
+
+      .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--on-surface);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .section-icon {
+        margin-right: 0.75rem;
+        color: var(--primary);
+      }
+
+      .product-form {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .form-row {
+        display: grid;
+        gap: 1rem;
+      }
+
+      @media (min-width: 640px) {
+        .form-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--on-surface);
+        margin-bottom: 0.5rem;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--outline);
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.2s;
+      }
+
+      .form-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--primary);
+        border-color: transparent;
+      }
+
+      .form-textarea {
+        resize: none;
+        min-height: 6rem;
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--outline);
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        background: white;
+        transition: all 0.2s;
+      }
+
+      .form-select:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--primary);
+        border-color: transparent;
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .checkbox-input {
+        width: 1rem;
+        height: 1rem;
+        accent-color: var(--primary);
+      }
+
+      .checkbox-label {
+        font-size: 0.875rem;
+        color: var(--on-surface);
+      }
+
+      .add-product-button {
+        width: 100%;
+        background: var(--primary);
+        color: white;
+        padding: 1rem 1.5rem;
+        border: none;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .add-product-button:hover {
+        background: var(--primary-dark);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      .notifications-section {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+      }
+
+      .notifications-list {
+        max-height: 20rem;
+        overflow-y: auto;
+      }
+
+      .notification-item {
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--outline);
+        transition: background-color 0.2s;
+      }
+
+      .notification-item:last-child {
+        border-bottom: none;
+      }
+
+      .notification-item:hover {
+        background: var(--surface-variant);
+      }
+
+      .notification-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+
+      .notification-dot {
+        flex-shrink: 0;
+        width: 0.5rem;
+        height: 0.5rem;
+        background: var(--primary);
+        border-radius: 50%;
+        margin-top: 0.5rem;
+      }
+
+      .notification-text {
+        flex: 1;
+      }
+
+      .notification-message {
+        color: var(--on-surface);
+        line-height: 1.625;
+        font-size: 0.875rem;
+      }
+
+      .notification-time {
+        font-size: 0.75rem;
+        color: var(--on-surface-variant);
+        margin-top: 0.5rem;
+      }
+
+      .orders-section {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .orders-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .orders-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--on-surface);
+      }
+
+      .view-all-link {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+
+      .view-all-link:hover {
+        color: var(--primary-dark);
+      }
+
+      .order-count {
+        font-size: 0.875rem;
+        color: var(--on-surface-variant);
+        font-weight: 500;
+      }
+
+      .order-date {
+        font-size: 0.875rem;
+        color: var(--on-surface-variant);
+      }
+
+      .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+      }
+
+      .orders-table th {
+        text-align: left;
+        padding: 0.75rem;
+        background: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.875rem;
+      }
+
+      .orders-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #f3f4f6;
+        font-size: 0.875rem;
+        vertical-align: top;
+      }
+
+      .orders-table tr:hover {
+        background: #f9fafb;
+      }
+
+      .orders-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .order-id {
+        font-weight: 600;
+        color: var(--on-surface);
+      }
+
+      .order-customer {
+        color: var(--on-surface);
+      }
+
+      .order-amount {
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .order-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .status-accepted {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .status-packed {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+
+      .status-delivered {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .status-cancelled {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .order-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .action-button {
+        padding: 0.25rem 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        background: white;
+        color: #374151;
+      }
+
+      .accept-button {
+        background: #10b981;
+        color: white;
+        border-color: #10b981;
+      }
+
+      .reject-button {
+        background: #ef4444;
+        color: white;
+        border-color: #ef4444;
+      }
+
+      .pack-button {
+        background: #f59e0b;
+        color: white;
+        border-color: #f59e0b;
+      }
+
+      .deliver-button {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+      }
+
+      .stock-section {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1rem;
+      }
+
+      .stock-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .stock-table th {
+        text-align: left;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--outline);
+        font-weight: 600;
+        color: var(--on-surface);
+        font-size: 0.875rem;
+      }
+
+      .stock-table td {
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--outline);
+        font-size: 0.875rem;
+      }
+
+      .stock-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .product-name {
+        font-weight: 600;
+        color: var(--on-surface);
+      }
+
+      .stock-quantity {
+        font-weight: 600;
+      }
+
+      .stock-low {
+        color: var(--error);
+      }
+
+      .stock-medium {
+        color: var(--warning);
+      }
+
+      .stock-high {
+        color: var(--primary);
+      }
+
+      .flash-messages {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .flash-message {
+        background: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid;
+        padding: 1rem;
+        max-width: 24rem;
+        transform: translateX(100%);
+        transition: all 0.3s;
+      }
+
+      .flash-message.show {
+        transform: translateX(0);
+      }
+
+      .flash-success {
+        border-left-color: var(--primary);
+      }
+
+      .flash-error {
+        border-left-color: var(--error);
+      }
+
+      .flash-info {
+        border-left-color: var(--info);
+      }
+
+      .flash-content {
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .flash-icon {
+        flex-shrink: 0;
+      }
+
+      .flash-success .flash-icon {
+        color: var(--primary);
+      }
+
+      .flash-error .flash-icon {
+        color: var(--error);
+      }
+
+      .flash-info .flash-icon {
+        color: var(--info);
+      }
+
+      .flash-text {
+        margin-left: 0.75rem;
+        flex: 1;
+      }
+
+      .flash-message-text {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--on-surface);
+      }
+
+      .flash-close {
+        margin-left: 1rem;
+        flex-shrink: 0;
+        background: white;
+        border-radius: 0.375rem;
+        display: inline-flex;
+        color: var(--on-surface-variant);
+        border: none;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+
+      .flash-close:hover {
+        color: var(--on-surface-variant);
+      }
+
+      .content-section {
+        display: none;
+        flex: 1;
+        height: auto;
+        min-height: 500px;
+        padding: 2rem;
+      }
+
+      .content-section.active {
+        display: block !important;
+        flex: 1;
+        height: auto;
+        min-height: 500px;
+        padding: 2rem;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+
+      .previous-orders {
+        margin-top: 1rem;
+        border-left: 3px solid #3b82f6;
+      }
+
+      .previous-orders .orders-header {
+        background: #f8fafc;
+        margin: -1rem -1rem 1rem -1rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem 0.5rem 0 0;
+      }
+
+      .previous-orders .orders-title {
+        color: #1f2937;
+        margin: 0;
+      }
+
+      .previous-orders .order-count {
+        color: #6b7280;
+        font-weight: 500;
+      }
+
+      /* Profile Section Styles */
+      .profile-section {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1rem;
+      }
+
+      .profile-form {
+        max-width: 800px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group.full-width {
+        grid-column: 1 / -1;
+      }
+
+      .form-group label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        transition: border-color 0.2s;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+        border: 1px solid #3b82f6;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .btn-primary:hover {
+        background: #2563eb;
+      }
+
+      .btn-secondary {
+        background: white;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .btn-secondary:hover {
+        background: #f9fafb;
+      }
+
+      .btn-danger {
+        background: #ef4444;
+        color: white;
+        border: 1px solid #ef4444;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .btn-danger:hover {
+        background: #dc2626;
+      }
+
+      .btn-small {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 0.25rem;
+        border: 1px solid #d1d5db;
+        background: white;
+        color: #374151;
+        cursor: pointer;
+        margin-left: 0.5rem;
+      }
+
+      .btn-small.btn-danger {
+        background: #ef4444;
+        color: white;
+        border-color: #ef4444;
+      }
+
+      .current-image img {
+        border-radius: 0.375rem;
+        border: 1px solid #e5e7eb;
+      }
+
+      .current-file {
+        margin-top: 0.5rem;
+        color: #6b7280;
+      }
+
+      /* Enhanced Notifications Styles */
+      .notifications-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .notification-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .notification-item {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        transition: all 0.2s;
+      }
+
+      .notification-item.unread {
+        background: #f8fafc;
+        border-left: 4px solid #3b82f6;
+      }
+
+      .notification-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .notification-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #d1d5db;
+        margin-top: 0.5rem;
+        flex-shrink: 0;
+      }
+
+      .notification-dot.active {
+        background: #3b82f6;
+      }
+
+      .notification-text {
+        flex: 1;
+      }
+
+      .notification-message {
+        margin: 0 0 0.5rem 0;
+        color: #374151;
+        font-weight: 500;
+      }
+
+      .notification-time {
+        margin: 0;
+        color: #6b7280;
+        font-size: 0.875rem;
+      }
+
+      .notification-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #6b7280;
+      }
+
+      .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #d1d5db;
+      }
+
+      .empty-state p {
+        margin: 0 0 0.5rem 0;
+        font-weight: 500;
+        color: #374151;
+      }
+
+      .empty-state small {
+        color: #6b7280;
+      }
+
+      .form-help {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        color: #6b7280;
+        line-height: 1.4;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background-color: var(--surface);
+        margin: 5% auto;
+        padding: 0;
+        border-radius: var(--radius-lg);
+        width: 80%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-3);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--outline);
+      }
+
+      .modal-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--on-surface);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .close-button {
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        background: none;
+        border: none;
+        color: var(--on-surface-variant);
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .close-button:hover {
+        background: var(--surface-variant);
+      }
+
+      .modal-body {
+        padding: 1.5rem;
+      }
+
+      .profile-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .mobile-menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--on-surface);
+        cursor: pointer;
+        padding: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .mobile-menu-toggle {
+          display: block;
+        }
+        .sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s;
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .top-bar {
+          padding: 1rem;
+        }
+
+        .content-area {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+      <div
+        class="flash-message flash-{{ category }}"
+        data-category="{{ category }}"
+      >
+        <div class="flash-content">
+          <div class="flash-icon">
+            {% if category == 'success' %}
+            <i class="fas fa-check-circle"></i>
+            {% elif category == 'error' %}
+            <i class="fas fa-exclamation-circle"></i>
+            {% else %}
+            <i class="fas fa-info-circle"></i>
+            {% endif %}
+          </div>
+          <div class="flash-text">
+            <p class="flash-message-text">{{ message }}</p>
+          </div>
+          <button class="flash-close close-flash">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <div class="logo-icon">
+              <span class="material-icons">agriculture</span>
+            </div>
+            <div class="logo-text">
+              <span class="logo-title">Farm2Home</span>
+              <span class="logo-subtitle">Farmer Panel</span>
+            </div>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <a
+              href="#dashboard"
+              class="nav-item active"
+              data-section="dashboard"
+            >
+              <span class="material-icons nav-icon">dashboard</span>
+              <span class="nav-text">Dashboard</span>
+            </a>
+    
+            </a>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Management</div>
+            <a href="#products" class="nav-item" data-section="products">
+              <span class="material-icons nav-icon">inventory</span>
+              <span class="nav-text">Add Products</span>
+            </a>
+            <a href="#orders" class="nav-item" data-section="orders">
+              <span class="material-icons nav-icon">shopping_cart</span>
+              <span class="nav-text">Orders</span>
+            </a>
+            <a href="#inventory" class="nav-item" data-section="inventory">
+              <span class="material-icons nav-icon">warehouse</span>
+              <span class="nav-text">Inventory</span>
+            </a>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Settings</div>
+            <a href="#profile" class="nav-item" data-section="profile">
+              <span class="material-icons nav-icon">settings</span>
+              <span class="nav-text">Profile</span>
+            </a>
+            <a
+              href="#notifications"
+              class="nav-item"
+              data-section="notifications"
+            >
+              <span class="material-icons nav-icon">notifications</span>
+              <span class="nav-text">Notifications</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 class="page-title">Farmer Dashboard</h1>
+          <div class="user-menu">
+            <div class="user-info">
+              <div class="user-name">{{ current_user.username }}</div>
+              <div class="user-role">Farmer</div>
+            </div>
+            <div
+              class="user-avatar"
+              onclick="showProfile()"
+              style="cursor: pointer"
+              title="Edit Profile"
+            >
+              {{ current_user.username[0].upper() }}
+            </div>
+            <a href="{{ url_for('logout') }}" class="logout-btn" title="Logout">
+              <i class="fas fa-sign-out-alt"></i>
+            </a>
+          </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area">
+          <!-- Dashboard Section -->
+          <div id="dashboard" class="content-section active">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-header">
+                  <div class="stat-icon green">
+                    <i class="fas fa-shopping-cart"></i>
+                  </div>
+                  <div class="stat-trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>15%</span>
+                  </div>
+                </div>
+                <div class="stat-value">{{ total_orders }}</div>
+                <div class="stat-label">Total Orders</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-header">
+                  <div class="stat-icon blue">
+                    <i class="fas fa-dollar-sign"></i>
+                  </div>
+                  <div class="stat-trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>22%</span>
+                  </div>
+                </div>
+                <div class="stat-value">₹{{ total_revenue }}</div>
+                <div class="stat-label">Total Revenue</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-header">
+                  <div class="stat-icon orange">
+                    <i class="fas fa-box"></i>
+                  </div>
+                  <div class="stat-trend down">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>5%</span>
+                  </div>
+                </div>
+                <div class="stat-value">{{ total_products }}</div>
+                <div class="stat-label">Products Listed</div>
+              </div>
+            </div>
+
+            <!-- Main Sections -->
+            <div class="main-sections">
+              <!-- Quick Actions Section -->
+              <div class="add-product-section">
+                <h3 class="section-title">
+                  <i class="fas fa-tachometer-alt section-icon"></i>
+                  Quick Actions
+                </h3>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 1rem;
+                  "
+                >
+                  <button
+                    onclick="showSection('products')"
+                    class="add-product-button"
+                    style="margin: 0"
+                  >
+                    <i class="fas fa-plus"></i> Add Product
+                  </button>
+                  <button
+                    onclick="showSection('orders')"
+                    class="add-product-button"
+                    style="margin: 0"
+                  >
+                    <i class="fas fa-shopping-cart"></i> View Orders
+                  </button>
+                  <button
+                    onclick="showSection('inventory')"
+                    class="add-product-button"
+                    style="margin: 0"
+                  >
+                    <i class="fas fa-warehouse"></i> Check Inventory
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notifications Section -->
+              <div class="notifications-section">
+                <h3 class="section-title">
+                  <i class="fas fa-bell section-icon"></i>
+                  Recent Notifications
+                </h3>
+                <div class="notifications-list">
+                  {% for notification in notifications %}
+                  <div class="notification-item">
+                    <div class="notification-content">
+                      <div class="notification-dot"></div>
+                      <div class="notification-text">
+                        <p class="notification-message">
+                          {{ notification.message }}
+                        </p>
+                        <p class="notification-time">
+                          {{ notification.created_at.strftime('%Y-%m-%d %H:%M')
+                          }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Orders Section -->
+          <div id="orders" class="content-section">
+              <div class="orders-section">
+                 <div class="orders-header">
+                   <h3 class="orders-title">Current Orders</h3>
+                   <a href="#" class="view-all-link" onclick="showAllOrders()"
+                     >View All</a
+                   >
+                 </div>
+                <table class="orders-table">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Customer</th>
+                      <th>Location</th>
+                      <th>Products</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for order in orders %}
+                    <tr>
+                      <td class="order-id">#{{ order['id'] }}</td>
+                      <td class="order-customer">
+                        {{ order['customer_name'] }}
+                      </td>
+                      <td class="order-location">{{ order['location'] }}</td>
+                      <td>
+                        <ul class="order-products-list">
+                          {% for p in order['products'] %}
+                          <li>
+                            {% if p.image %}<img
+                              src="{{ url_for('static', filename='uploads/' + p.image) }}"
+                              alt="{{ p.name }}"
+                              style="
+                                height: 24px;
+                                width: 24px;
+                                vertical-align: middle;
+                              "
+                            />
+                            {% endif %} <strong>{{ p.name }}</strong> ({{
+                            p.quantity }} kg)
+                            <span style="color: #888; font-size: smaller"
+                              >{{ p.category }}</span
+                            >
+                          </li>
+                          {% endfor %}
+                        </ul>
+                      </td>
+                      <td class="order-amount">₹{{ order['price'] }}</td>
+                      <td>
+                        <span
+                          class="order-status status-{{ order['status'].lower() }}"
+                        >
+                          {{ order['status'] }}
+                        </span>
+                      </td>
+                      <td class="order-actions">
+                        {% if order['status'] == 'pending' %}
+                        <form
+                          method="POST"
+                          action="{{ url_for('accept_order', order_id=order['id']) }}"
+                          style="display: inline"
+                        >
+                          <input
+                            type="hidden"
+                            name="_csrf_token"
+                            value="{{ csrf_token() }}"
+                          />
+                          <button
+                            type="submit"
+                            class="action-button accept-button"
+                          >
+                            Accept
+                          </button>
+                        </form>
+                        <form
+                          method="POST"
+                          action="{{ url_for('reject_order', order_id=order['id']) }}"
+                          style="display: inline"
+                        >
+                          <input
+                            type="hidden"
+                            name="_csrf_token"
+                            value="{{ csrf_token() }}"
+                          />
+                          <button
+                            type="submit"
+                            class="action-button reject-button"
+                          >
+                            Reject
+                          </button>
+                        </form>
+                        {% elif order['status'] == 'accepted' or order['status']
+                        == 'packed' %}
+                        <form
+                          method="POST"
+                          action="{{ url_for('update_order_status', order_id=order['id']) }}"
+                          style="display: inline"
+                        >
+                          <input
+                            type="hidden"
+                            name="_csrf_token"
+                            value="{{ csrf_token() }}"
+                          />
+                          <input
+                            type="hidden"
+                            name="status"
+                            value="delivered"
+                          />
+                          <button
+                            type="submit"
+                            class="action-button deliver-button"
+                          >
+                            Mark Delivered
+                          </button>
+                        </form>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Previous Orders Section -->
+              <div class="orders-section previous-orders">
+                <div class="orders-header">
+                  <h3 class="orders-title">Previous Orders</h3>
+                  <span class="order-count"
+                    >{{ previous_orders|length }} completed orders</span
+                  >
+                </div>
+                <table class="orders-table">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Customer</th>
+                      <th>Location</th>
+                      <th>Products</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for order in previous_orders %}
+                    <tr>
+                      <td class="order-id">#{{ order['id'] }}</td>
+                      <td class="order-customer">
+                        {{ order['customer_name'] }}
+                      </td>
+                      <td class="order-location">{{ order['location'] }}</td>
+                      <td>
+                        <ul class="order-products-list">
+                          {% for p in order['products'] %}
+                          <li>
+                            {% if p.image %}<img
+                              src="{{ url_for('static', filename='uploads/' + p.image) }}"
+                              alt="{{ p.name }}"
+                              style="
+                                height: 20px;
+                                width: 20px;
+                                vertical-align: middle;
+                              "
+                            />
+                            {% endif %} <strong>{{ p.name }}</strong> ({{
+                            p.quantity }} kg)
+                            <span style="color: #888; font-size: smaller"
+                              >{{ p.category }}</span
+                            >
+                          </li>
+                          {% endfor %}
+                        </ul>
+                      </td>
+                      <td class="order-amount">₹{{ order['price'] }}</td>
+                      <td>
+                        <span
+                          class="order-status status-{{ order['status'].lower() }}"
+                        >
+                          {{ order['status'] }}
+                        </span>
+                      </td>
+                      <td class="order-date">{{ order['date'] }}</td>
+                    </tr>
+                    {% endfor %} {% if not previous_orders %}
+                    <tr>
+                      <td
+                        colspan="7"
+                        style="
+                          text-align: center;
+                          padding: 2rem;
+                          color: var(--on-surface-variant);
+                        "
+                      >
+                        <i
+                          class="fas fa-inbox"
+                          style="
+                            font-size: 2rem;
+                            margin-bottom: 1rem;
+                            display: block;
+                          "
+                        ></i>
+                        No previous orders yet
+                      </td>
+                    </tr>
+                    {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          <!-- Stock Status Section -->
+          <div id="inventory" class="content-section">
+            <div class="stock-section">
+              <h3 class="section-title">
+                <i class="fas fa-warehouse section-icon"></i>
+                Stock Status
+              </h3>
+              <table class="stock-table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Stock (kg)</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for product in products %}
+                  <tr>
+                    <td class="product-name">{{ product['name'] }}</td>
+                    <td>{{ product['category'] }}</td>
+                    <td
+                      class="stock-quantity {% if product['stock'] < 10 %}stock-low{% elif product['stock'] < 50 %}stock-medium{% else %}stock-high{% endif %}"
+                    >
+                      <span id="stock-{{ product['id'] }}"
+                        >{{ product['stock'] }}</span
+                      >
+                    </td>
+                    <td>
+                      {% if product['stock'] < 10 %}
+                      <span class="order-status status-cancelled"
+                        >Low Stock</span
+                      >
+                      {% elif product['stock'] < 50 %}
+                      <span class="order-status status-pending">Medium</span>
+                      {% else %}
+                      <span class="order-status status-delivered">Good</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <button
+                        onclick="editStock({{ product['id'] }}, '{{ product['name'] }}', {{ product['stock'] }})"
+                        class="action-button"
+                        style="
+                          background: var(--info);
+                          color: white;
+                          padding: 0.25rem 0.75rem;
+                          border: none;
+                          border-radius: 0.5rem;
+                          font-size: 0.75rem;
+                          cursor: pointer;
+                        "
+                      >
+                        Edit Stock
+                      </button>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Products Section -->
+          <div id="products" class="content-section">
+            <div class="add-product-section">
+              <h3 class="section-title">
+                <i class="fas fa-plus section-icon"></i>
+                Add New Product
+              </h3>
+              <form
+                method="POST"
+                action="{{ url_for('add_product') }}"
+                class="product-form"
+                enctype="multipart/form-data"
+              >
+                <input
+                  type="hidden"
+                  name="_csrf_token"
+                  value="{{ csrf_token() }}"
+                />
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="name" class="form-label">Product Name</label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      required
+                      class="form-input"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="category" class="form-label">Category</label>
+                    <select
+                      id="category"
+                      name="category"
+                      required
+                      class="form-select"
+                    >
+                      <option value="">Select Category</option>
+                      <option value="vegetables">Vegetables</option>
+                      <option value="fruits">Fruits</option>
+                      <option value="dairy">Dairy</option>
+                      <option value="grains">Grains</option>
+                      <option value="poultry">Poultry</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="price_per_kg" class="form-label"
+                      >Your Price per kg (₹)</label
+                    >
+                    <input
+                      type="number"
+                      id="price_per_kg"
+                      name="price_per_kg"
+                      step="0.01"
+                      required
+                      class="form-input"
+                    />
+                    <small class="form-help">Note: A 3% commission will be added to your price for platform fees. You'll receive your quoted price, customers will pay the final price.</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="available_quantity" class="form-label"
+                      >Available Quantity (kg)</label
+                    >
+                    <input
+                      type="number"
+                      id="available_quantity"
+                      name="available_quantity"
+                      required
+                      class="form-input"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="description" class="form-label"
+                    >Description</label
+                  >
+                  <textarea
+                    id="description"
+                    name="description"
+                    required
+                    class="form-input form-textarea"
+                  ></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="image" class="form-label">Product Image</label>
+                  <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                    class="form-input"
+                  />
+                </div>
+
+                <div class="checkbox-group">
+                  <input
+                    type="checkbox"
+                    id="is_organic"
+                    name="is_organic"
+                    class="checkbox-input"
+                  />
+                  <label for="is_organic" class="checkbox-label"
+                    >Organic Product</label
+                  >
+                </div>
+
+                <button type="submit" class="add-product-button">
+                  <i class="fas fa-plus"></i> Add Product
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Analytics Section -->
+          <div id="analytics" class="content-section">
+            <div class="add-product-section">
+              <h3 class="section-title">
+                <i class="fas fa-chart-line section-icon"></i>
+                Analytics & Reports
+              </h3>
+              <p>Analytics dashboard coming soon...</p>
+            </div>
+          </div>
+
+          <!-- Profile Section -->
+          <div id="profile" class="content-section">
+            <div class="profile-section">
+              <h3 class="section-title">
+                <i class="fas fa-user section-icon"></i>
+                Profile Settings
+              </h3>
+              
+              <form method="POST" action="{{ url_for('farmer.edit_profile') }}" enctype="multipart/form-data" class="profile-form">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
+                
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" value="{{ current_user.name }}" required>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ current_user.email }}" required>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" value="{{ current_user.phone or '' }}">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="farm_name">Farm Name</label>
+                    <input type="text" id="farm_name" name="farm_name" value="{{ current_user.farm_name or '' }}">
+                  </div>
+                  
+                  <div class="form-group full-width">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" rows="3">{{ current_user.address or '' }}</textarea>
+                  </div>
+                  
+                  <div class="form-group full-width">
+                    <label for="farm_description">Farm Description</label>
+                    <textarea id="farm_description" name="farm_description" rows="4">{{ current_user.farm_description or '' }}</textarea>
+                  </div>
+                  
+                  <div class="form-group full-width">
+                    <label for="certifications">Certifications</label>
+                    <textarea id="certifications" name="certifications" rows="3" placeholder="List your organic certifications, quality standards, etc.">{{ current_user.certifications or '' }}</textarea>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="profile_picture">Profile Picture</label>
+                    <input type="file" id="profile_picture" name="profile_picture" accept="image/*">
+                    {% if current_user.profile_picture %}
+                    <div class="current-image">
+                      <img src="{{ url_for('static', filename='uploads/' + current_user.profile_picture) }}" alt="Current Profile Picture" style="max-width: 100px; max-height: 100px; margin-top: 0.5rem;">
+                    </div>
+                    {% endif %}
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="id_verification">ID Verification Document</label>
+                    <input type="file" id="id_verification" name="id_verification" accept=".pdf,.jpg,.jpeg,.png">
+                    {% if current_user.id_verification %}
+                    <div class="current-file">
+                      <small>Current: {{ current_user.id_verification }}</small>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="form-actions">
+                  <button type="submit" class="btn-primary">Update Profile</button>
+                  <button type="button" class="btn-secondary" onclick="showSection('dashboard')">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Notifications Section -->
+          <div id="notifications" class="content-section">
+            <div class="notifications-section">
+              <div class="notifications-header">
+                <h3 class="section-title">
+                  <i class="fas fa-bell section-icon"></i>
+                  Notifications
+                </h3>
+                <div class="notification-actions">
+                  <button onclick="markAllAsRead()" class="btn-secondary">Mark All Read</button>
+                  <button onclick="clearAllNotifications()" class="btn-danger">Clear All</button>
+                </div>
+              </div>
+              
+              <div class="notifications-list">
+                {% if notifications %}
+                  {% for notification in notifications %}
+                  <div class="notification-item {% if not notification.is_read %}unread{% endif %}" data-id="{{ notification.id }}">
+                    <div class="notification-content">
+                      <div class="notification-dot {% if not notification.is_read %}active{% endif %}"></div>
+                      <div class="notification-text">
+                        <p class="notification-message">
+                          {{ notification.message }}
+                        </p>
+                        <p class="notification-time">
+                          {{ notification.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </p>
+                      </div>
+                      <div class="notification-actions">
+                        <button onclick="markAsRead({{ notification.id }})" class="btn-small">Mark Read</button>
+                        <button onclick="deleteNotification({{ notification.id }})" class="btn-small btn-danger">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                {% else %}
+                  <div class="empty-state">
+                    <i class="fas fa-bell-slash"></i>
+                    <p>No notifications yet</p>
+                    <small>You'll see order updates, system messages, and important announcements here.</small>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Stock Edit Modal -->
+    <div id="stockModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">
+            <i class="fas fa-edit"></i>
+            Edit Stock
+          </h3>
+          <button class="close-button" onclick="closeModal('stockModal')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form class="profile-form" id="stockForm">
+            <div class="form-group">
+              <label for="stockProductName" class="form-label">Product</label>
+              <input
+                type="text"
+                id="stockProductName"
+                class="form-input"
+                readonly
+              />
+            </div>
+            <div class="form-group">
+              <label for="stockQuantity" class="form-label"
+                >New Stock Quantity (kg)</label
+              >
+              <input
+                type="number"
+                id="stockQuantity"
+                class="form-input"
+                placeholder="Enter new quantity"
+                required
+                min="0"
+                step="0.1"
+              />
+            </div>
+            <button type="submit" class="add-product-button">
+              Update Stock
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">
+            <i class="fas fa-user"></i>
+            Edit Profile
+          </h3>
+          <button class="close-button" onclick="closeModal('profileModal')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form class="profile-form" id="profileForm">
+            <div class="form-group">
+              <label for="profileName" class="form-label">Full Name</label>
+              <input
+                type="text"
+                id="profileName"
+                class="form-input"
+                placeholder="Full Name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="profileEmail" class="form-label">Email</label>
+              <input
+                type="email"
+                id="profileEmail"
+                class="form-input"
+                placeholder="Email"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="profilePhone" class="form-label">Phone Number</label>
+              <input
+                type="tel"
+                id="profilePhone"
+                class="form-input"
+                placeholder="Phone Number"
+              />
+            </div>
+            <div class="form-group">
+              <label for="profileAddress" class="form-label">Address</label>
+              <textarea
+                id="profileAddress"
+                class="form-input form-textarea"
+                placeholder="Address"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label for="profileFarm" class="form-label">Farm Name</label>
+              <input
+                type="text"
+                id="profileFarm"
+                class="form-input"
+                placeholder="Farm Name"
+              />
+            </div>
+            <button type="submit" class="add-product-button">
+              Update Profile
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Flash message animations
+      document.addEventListener("DOMContentLoaded", function () {
+        const flashMessages = document.querySelectorAll(".flash-message");
+        flashMessages.forEach((message, index) => {
+          setTimeout(() => {
+            message.classList.add("show");
+          }, index * 100);
+        });
+
+        // Close flash messages
+        document.querySelectorAll(".close-flash").forEach((button) => {
+          button.addEventListener("click", function () {
+            const message = this.closest(".flash-message");
+            message.classList.remove("show");
+            setTimeout(() => message.remove(), 300);
+          });
+        });
+
+        // Auto-remove flash messages after 5 seconds
+        flashMessages.forEach((message) => {
+          setTimeout(() => {
+            if (message.parentNode) {
+              message.classList.remove("show");
+              setTimeout(() => message.remove(), 300);
+            }
+          }, 5000);
+        });
+
+        // Sidebar navigation
+        const navItems = document.querySelectorAll(".nav-item");
+        const contentSections = document.querySelectorAll(".content-section");
+        const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+        const sidebar = document.querySelector(".sidebar");
+
+        // Navigation functionality
+        navItems.forEach((item) => {
+          item.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            // Remove active class from all nav items
+            navItems.forEach((nav) => nav.classList.remove("active"));
+
+            // Add active class to clicked item
+            this.classList.add("active");
+
+            // Hide all content sections
+            contentSections.forEach((section) =>
+              section.classList.remove("active")
+            );
+
+            // Show selected section
+            const targetSection = this.getAttribute("data-section");
+            const targetElement = document.getElementById(targetSection);
+            if (targetElement) {
+              targetElement.classList.add("active");
+            }
+
+            // Close mobile menu if open
+            if (window.innerWidth <= 768) {
+              sidebar.classList.remove("open");
+            }
+          });
+        });
+
+        // Mobile menu toggle
+        if (mobileMenuToggle) {
+          mobileMenuToggle.addEventListener("click", function () {
+            sidebar.classList.toggle("open");
+          });
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener("click", function (e) {
+          if (
+            window.innerWidth <= 768 &&
+            !sidebar.contains(e.target) &&
+            !mobileMenuToggle.contains(e.target)
+          ) {
+            sidebar.classList.remove("open");
+          }
+        });
+
+        // Handle window resize
+        window.addEventListener("resize", function () {
+          if (window.innerWidth > 768) {
+            sidebar.classList.remove("open");
+          }
+        });
+      });
+
+      // Global function for quick action buttons
+      function showSection(sectionName) {
+        // Remove active class from all nav items
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((nav) => nav.classList.remove("active"));
+
+        // Add active class to corresponding nav item
+        const targetNavItem = document.querySelector(
+          `[data-section="${sectionName}"]`
+        );
+        if (targetNavItem) {
+          targetNavItem.classList.add("active");
+        }
+
+        // Hide all content sections
+        document
+          .querySelectorAll(".content-section")
+          .forEach((section) => section.classList.remove("active"));
+
+        // Show selected section
+        const targetElement = document.getElementById(sectionName);
+        if (targetElement) {
+          targetElement.classList.add("active");
+        }
+      }
+
+      // Modal functions
+      let currentProductId = null;
+
+      function editStock(productId, productName, currentStock) {
+        currentProductId = productId;
+        const modal = document.getElementById("stockModal");
+        if (modal) {
+          document.getElementById("stockProductName").value = productName;
+          document.getElementById("stockQuantity").value = currentStock;
+          modal.style.display = "block";
+        }
+      }
+
+      function showProfile() {
+        const modal = document.getElementById("profileModal");
+        if (modal) {
+          // Load current user data
+          document.getElementById("profileName").value =
+            '{{ current_user.name if current_user.is_authenticated else "Farmer Name" }}';
+          document.getElementById("profileEmail").value =
+            '{{ current_user.email if current_user.is_authenticated else "farmer@example.com" }}';
+          document.getElementById("profilePhone").value =
+            '{{ current_user.phone if current_user.is_authenticated and current_user.phone else "" }}';
+          document.getElementById("profileAddress").value =
+            '{{ current_user.address if current_user.is_authenticated and current_user.address else "" }}';
+          document.getElementById("profileFarm").value =
+            '{{ current_user.farm_name if current_user.is_authenticated and current_user.farm_name else "" }}';
+          modal.style.display = "block";
+        }
+      }
+
+      function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+      }
+
+      function showAllOrders() {
+        // For now, just show an alert. In a real app, this would load more orders
+        alert(
+          "All orders view - This would show a paginated list of all orders in a real implementation."
+        );
+      }
+
+      // Notification functions
+      function markAsRead(notificationId) {
+        fetch(`/farmer/notifications/${notificationId}/read`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const notificationItem = document.querySelector(`[data-id="${notificationId}"]`);
+            if (notificationItem) {
+              notificationItem.classList.remove('unread');
+              const dot = notificationItem.querySelector('.notification-dot');
+              if (dot) dot.classList.remove('active');
+            }
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      }
+
+      function markAllAsRead() {
+        fetch('/farmer/notifications/mark-all-read', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            document.querySelectorAll('.notification-item').forEach(item => {
+              item.classList.remove('unread');
+              const dot = item.querySelector('.notification-dot');
+              if (dot) dot.classList.remove('active');
+            });
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      }
+
+      function deleteNotification(notificationId) {
+        if (confirm('Are you sure you want to delete this notification?')) {
+          fetch(`/farmer/notifications/${notificationId}/delete`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              const notificationItem = document.querySelector(`[data-id="${notificationId}"]`);
+              if (notificationItem) {
+                notificationItem.remove();
+              }
+            }
+          })
+          .catch(error => console.error('Error:', error));
+        }
+      }
+
+      function clearAllNotifications() {
+        if (confirm('Are you sure you want to clear all notifications?')) {
+          fetch('/farmer/notifications/clear-all', {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              document.querySelector('.notifications-list').innerHTML = `
+                <div class="empty-state">
+                  <i class="fas fa-bell-slash"></i>
+                  <p>No notifications yet</p>
+                  <small>You'll see order updates, system messages, and important announcements here.</small>
+                </div>
+              `;
+            }
+          })
+          .catch(error => console.error('Error:', error));
+        }
+      }
+
+      // Form submissions
+      document.addEventListener("DOMContentLoaded", function () {
+        // Stock form submission
+        const stockForm = document.getElementById("stockForm");
+        if (stockForm) {
+          stockForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const productName =
+              document.getElementById("stockProductName").value;
+            const newQuantity = document.getElementById("stockQuantity").value;
+
+            // Update the display
+            const stockElement = document.getElementById(
+              `stock-${currentProductId}`
+            );
+            if (stockElement) {
+              stockElement.textContent = newQuantity;
+            }
+
+            alert(`Stock updated for ${productName} to ${newQuantity} kg`);
+            closeModal("stockModal");
+          });
+        }
+
+        // Profile form submission
+        const profileForm = document.getElementById("profileForm");
+        if (profileForm) {
+          profileForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            alert("Profile updated successfully!");
+            closeModal("profileModal");
+          });
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener("click", function (e) {
+          if (e.target.classList.contains("modal")) {
+            e.target.style.display = "none";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

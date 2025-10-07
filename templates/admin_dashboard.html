@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Farm2Home</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #2e7d32;
+        --primary-light: #4caf50;
+        --primary-dark: #1b5e20;
+        --secondary: #ff8f00;
+        --surface: #ffffff;
+        --surface-variant: #f5f5f5;
+        --background: #fafafa;
+        --on-surface: #212121;
+        --on-surface-variant: #757575;
+        --outline: #e0e0e0;
+        --error: #d32f2f;
+        --success: #388e3c;
+        --warning: #f57c00;
+        --info: #1976d2;
+        --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        --shadow-2: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+        --shadow-3: 0 10px 20px rgba(0, 0, 0, 0.19),
+          0 6px 6px rgba(0, 0, 0, 0.23);
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: var(--background);
+        color: var(--on-surface);
+        line-height: 1.5;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .dashboard-container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background: var(--surface);
+        border-right: 1px solid var(--outline);
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 100;
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-header {
+        padding: 24px;
+        border-bottom: 1px solid var(--outline);
+        background: var(--surface);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .logo-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--on-surface);
+        letter-spacing: -0.02em;
+      }
+
+      .logo-subtitle {
+        font-size: 12px;
+        color: var(--on-surface-variant);
+        font-weight: 400;
+      }
+
+      .sidebar-nav {
+        padding: 8px 0;
+      }
+
+      .nav-section {
+        margin-bottom: 24px;
+      }
+
+      .nav-section-title {
+        padding: 0 24px 8px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--on-surface-variant);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 24px;
+        color: var(--on-surface-variant);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        margin: 4px 12px;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .nav-item:hover {
+        background: var(--surface-variant);
+        color: var(--on-surface);
+      }
+
+      .nav-item.active {
+        background: var(--primary);
+        color: white;
+        box-shadow: var(--shadow-1);
+      }
+
+      .nav-icon {
+        width: 1.25rem;
+        text-align: center;
+      }
+
+      .nav-text {
+        font-weight: 500;
+      }
+
+      .logout-item {
+        margin-top: 2rem;
+        border-top: 1px solid var(--gray-100);
+        padding-top: 1rem;
+      }
+
+      .logout-item .nav-item {
+        color: var(--red-500);
+      }
+
+      .logout-item .nav-item:hover {
+        background: var(--red-500);
+        color: white;
+        border-right-color: var(--red-600);
+      }
+
+      .main-content {
+        flex: 1;
+        margin-left: 280px;
+        background: var(--background);
+        min-height: 100vh;
+      }
+
+      .top-bar {
+        background: var(--surface);
+        border-bottom: 1px solid var(--outline);
+        padding: 16px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--on-surface);
+        letter-spacing: -0.02em;
+      }
+
+      .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .user-info {
+        text-align: right;
+      }
+
+      .user-name {
+        font-weight: 500;
+        color: var(--on-surface);
+        font-size: 14px;
+      }
+
+      .user-role {
+        font-size: 12px;
+        color: var(--on-surface-variant);
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      .content-area {
+        padding: 32px;
+      }
+
+      .stats-grid {
+        display: grid;
+        gap: 24px;
+        margin-bottom: 32px;
+      }
+
+      @media (min-width: 640px) {
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .stats-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      .stat-card {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-1);
+        padding: 24px;
+        transition: all 0.2s ease;
+        border: 1px solid var(--outline);
+      }
+
+      .stat-card:hover {
+        box-shadow: var(--shadow-2);
+        transform: translateY(-2px);
+      }
+
+      .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+      }
+
+      .stat-icon.blue {
+        background: var(--info);
+      }
+
+      .stat-icon.green {
+        background: var(--success);
+      }
+
+      .stat-icon.purple {
+        background: #7b1fa2;
+      }
+
+      .stat-icon.orange {
+        background: var(--warning);
+      }
+
+      .stat-trend {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .stat-trend.up {
+        color: var(--success);
+      }
+
+      .stat-trend.down {
+        color: var(--error);
+      }
+
+      .stat-value {
+        font-size: 32px;
+        font-weight: 600;
+        color: var(--on-surface);
+        margin-bottom: 4px;
+        letter-spacing: -0.02em;
+      }
+
+      .stat-label {
+        font-size: 14px;
+        color: var(--on-surface-variant);
+        font-weight: 400;
+      }
+
+      .data-sections {
+        display: grid;
+        gap: 24px;
+      }
+
+      .data-section {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-1);
+        padding: 24px;
+        border: 1px solid var(--outline);
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+
+      .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--on-surface);
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.02em;
+      }
+
+      .section-icon {
+        margin-right: 12px;
+        color: var(--primary);
+        font-size: 20px;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .data-table th {
+        text-align: left;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--outline);
+        font-weight: 600;
+        color: var(--on-surface-variant);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .data-table td {
+        padding: 16px 0;
+        border-bottom: 1px solid var(--outline);
+        font-size: 14px;
+        color: var(--on-surface);
+      }
+
+      .data-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .data-table tr:hover {
+        background: var(--surface-variant);
+      }
+
+      .user-name {
+        font-weight: 500;
+        color: var(--on-surface);
+        font-size: 14px;
+      }
+
+      .user-email {
+        color: var(--on-surface-variant);
+        font-size: 12px;
+      }
+
+      .user-role {
+        padding: 4px 8px;
+        border-radius: var(--radius-sm);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .role-admin {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .role-farmer {
+        background: #e8f5e8;
+        color: var(--success);
+      }
+
+      .role-customer {
+        background: #e3f2fd;
+        color: var(--info);
+      }
+
+      .user-status {
+        padding: 4px 8px;
+        border-radius: var(--radius-sm);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .status-active {
+        background: #e8f5e8;
+        color: var(--success);
+      }
+
+      .status-inactive {
+        background: #ffebee;
+        color: var(--error);
+      }
+
+      .product-name {
+        font-weight: 600;
+        color: var(--gray-800);
+      }
+
+      .product-category {
+        color: var(--gray-600);
+      }
+
+      .product-price {
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .product-stock {
+        font-weight: 600;
+      }
+
+      .stock-low {
+        color: var(--red-500);
+      }
+
+      .stock-medium {
+        color: var(--yellow-400);
+      }
+
+      .stock-high {
+        color: var(--green-500);
+      }
+
+      .order-id {
+        font-weight: 600;
+        color: var(--gray-800);
+      }
+
+      .order-customer {
+        color: var(--gray-700);
+      }
+
+      .order-amount {
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .order-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .status-accepted {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .status-packed {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+
+      .status-delivered {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .status-cancelled {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .action-button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .approve-button {
+        background: var(--green-500);
+        color: white;
+      }
+
+      .approve-button:hover {
+        background: var(--green-600);
+      }
+
+      .reject-button {
+        background: var(--red-500);
+        color: white;
+      }
+
+      .reject-button:hover {
+        background: var(--red-600);
+      }
+
+      .toggle-button {
+        background: var(--blue-500);
+        color: white;
+      }
+
+      .toggle-button:hover {
+        background: #2563eb;
+      }
+
+      .flash-messages {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .flash-message {
+        background: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid;
+        padding: 1rem;
+        max-width: 24rem;
+        transform: translateX(100%);
+        transition: all 0.3s;
+      }
+
+      .flash-message.show {
+        transform: translateX(0);
+      }
+
+      .flash-success {
+        border-left-color: var(--green-500);
+      }
+
+      .flash-error {
+        border-left-color: var(--red-500);
+      }
+
+      .flash-info {
+        border-left-color: var(--blue-500);
+      }
+
+      .flash-content {
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .flash-icon {
+        flex-shrink: 0;
+      }
+
+      .flash-success .flash-icon {
+        color: var(--green-500);
+      }
+
+      .flash-error .flash-icon {
+        color: var(--red-500);
+      }
+
+      .flash-info .flash-icon {
+        color: var(--blue-500);
+      }
+
+      .flash-text {
+        margin-left: 0.75rem;
+        flex: 1;
+      }
+
+      .flash-message-text {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--gray-900);
+      }
+
+      .flash-close {
+        margin-left: 1rem;
+        flex-shrink: 0;
+        background: white;
+        border-radius: 0.375rem;
+        display: inline-flex;
+        color: var(--gray-400);
+        border: none;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+
+      .flash-close:hover {
+        color: var(--gray-500);
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s;
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .top-bar {
+          padding: 1rem;
+        }
+
+        .content-area {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+      <div
+        class="flash-message flash-{{ category }}"
+        data-category="{{ category }}"
+      >
+        <div class="flash-content">
+          <div class="flash-icon">
+            {% if category == 'success' %}
+            <i class="fas fa-check-circle"></i>
+            {% elif category == 'error' %}
+            <i class="fas fa-exclamation-circle"></i>
+            {% else %}
+            <i class="fas fa-info-circle"></i>
+            {% endif %}
+          </div>
+          <div class="flash-text">
+            <p class="flash-message-text">{{ message }}</p>
+          </div>
+          <button class="flash-close close-flash">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <div class="logo-icon">
+              <span class="material-icons">agriculture</span>
+            </div>
+            <div class="logo-text">
+              <span class="logo-title">Farm2Home</span>
+              <span class="logo-subtitle">Admin Panel</span>
+            </div>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Dashboard</div>
+            <div class="nav-item active" onclick="showSection('overview')">
+              <span class="material-icons nav-icon">dashboard</span>
+              <span class="nav-text">Overview</span>
+            </div>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Management</div>
+            <div class="nav-item" onclick="showSection('users')">
+              <span class="material-icons nav-icon">people</span>
+              <span class="nav-text">Users</span>
+            </div>
+            <div class="nav-item" onclick="showSection('products')">
+              <span class="material-icons nav-icon">inventory</span>
+              <span class="nav-text">Products</span>
+            </div>
+            <div class="nav-item" onclick="showSection('orders')">
+              <span class="material-icons nav-icon">shopping_cart</span>
+              <span class="nav-text">Orders</span>
+            </div>
+          </div>
+
+          <div class="logout-item">
+            <a href="{{ url_for('logout') }}" class="nav-item">
+              <span class="material-icons nav-icon">logout</span>
+              <span class="nav-text">Logout</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+          <h1 class="page-title">Admin Dashboard</h1>
+          <div class="user-menu">
+            <div class="user-info">
+              <div class="user-name">{{ current_user.username }}</div>
+              <div class="user-role">Administrator</div>
+            </div>
+            <div class="user-avatar">
+              {{ current_user.username[0].upper() }}
+            </div>
+          </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area">
+          <!-- Overview Section -->
+          <div id="overview-section" class="section-content">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-header">
+                  <div class="stat-icon blue">
+                    <span class="material-icons">people</span>
+                  </div>
+                  <div class="stat-trend up">
+                    <span class="material-icons" style="font-size: 16px"
+                      >trending_up</span
+                    >
+                    <span>12%</span>
+                  </div>
+                </div>
+                <div class="stat-value">{{ total_users }}</div>
+                <div class="stat-label">Total Users</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-header">
+                  <div class="stat-icon green">
+                    <span class="material-icons">shopping_cart</span>
+                  </div>
+                  <div class="stat-trend up">
+                    <span class="material-icons" style="font-size: 16px"
+                      >trending_up</span
+                    >
+                    <span>8%</span>
+                  </div>
+                </div>
+                <div class="stat-value">{{ total_orders }}</div>
+                <div class="stat-label">Total Orders</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-header">
+                  <div class="stat-icon purple">
+                    <span class="material-icons">attach_money</span>
+                  </div>
+                  <div class="stat-trend up">
+                    <span class="material-icons" style="font-size: 16px"
+                      >trending_up</span
+                    >
+                    <span>15%</span>
+                  </div>
+                </div>
+                <div class="stat-value">₹{{ total_revenue }}</div>
+                <div class="stat-label">Total Revenue</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-header">
+                  <div class="stat-icon orange">
+                    <span class="material-icons">inventory</span>
+                  </div>
+                  <div class="stat-trend down">
+                    <span class="material-icons" style="font-size: 16px"
+                      >trending_down</span
+                    >
+                    <span>3%</span>
+                  </div>
+                </div>
+                <div class="stat-value">{{ total_products }}</div>
+                <div class="stat-label">Total Products</div>
+              </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="data-section">
+              <div class="section-header">
+                <h3 class="section-title">
+                  <span class="material-icons section-icon">schedule</span>
+                  Recent Orders
+                </h3>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for order in recent_orders %}
+                  <tr>
+                    <td class="order-id">#{{ order.id }}</td>
+                    <td class="order-customer">
+                      {{ order.customer.username }}
+                    </td>
+                    <td class="order-amount">₹{{ order.total_amount }}</td>
+                    <td>
+                      <span
+                        class="order-status status-{{ order.status.lower() }}"
+                      >
+                        {{ order.status }}
+                      </span>
+                    </td>
+                    <td>{{ order.order_date.strftime('%Y-%m-%d') }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Users Section -->
+          <div id="users-section" class="section-content hidden">
+            <div class="data-section">
+              <div class="section-header">
+                <h3 class="section-title">
+                  <span class="material-icons section-icon">people</span>
+                  User Management
+                </h3>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for user in users %}
+                  <tr>
+                    <td class="user-name">{{ user.name }}</td>
+                    <td class="user-email">{{ user.email }}</td>
+                    <td>
+                      <span class="user-role role-{{ user.role.lower() }}">
+                        {{ user.role }}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        class="user-status {% if user.is_active %}status-active{% else %}status-inactive{% endif %}"
+                      >
+                        {% if user.is_active %}Active{% else %}Inactive{% endif
+                        %}
+                      </span>
+                    </td>
+                    <td class="action-buttons">
+                      {% if user.role == 'farmer' %} {% if user.is_active %}
+                      <form
+                        method="POST"
+                        action="{{ url_for('reject_user', user_id=user.id) }}"
+                        style="display: inline"
+                      >
+                        <input
+                          type="hidden"
+                          name="_csrf_token"
+                          value="{{ csrf_token() }}"
+                        />
+                        <button
+                          type="submit"
+                          class="action-button reject-button"
+                        >
+                          Suspend
+                        </button>
+                      </form>
+                      {% else %}
+                      <form
+                        method="POST"
+                        action="{{ url_for('approve_user', user_id=user.id) }}"
+                        style="display: inline"
+                      >
+                        <input
+                          type="hidden"
+                          name="_csrf_token"
+                          value="{{ csrf_token() }}"
+                        />
+                        <button
+                          type="submit"
+                          class="action-button approve-button"
+                        >
+                          Approve
+                        </button>
+                      </form>
+                      {% endif %} {% endif %}
+                      <form
+                        method="POST"
+                        action="{{ url_for('toggle_user_status', user_id=user.id) }}"
+                        style="display: inline"
+                      >
+                        <input
+                          type="hidden"
+                          name="_csrf_token"
+                          value="{{ csrf_token() }}"
+                        />
+                        <button
+                          type="submit"
+                          class="action-button toggle-button"
+                        >
+                          {% if user.is_active %}Deactivate{% else %}Activate{%
+                          endif %}
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Products Section -->
+          <div id="products-section" class="section-content hidden">
+            <div class="data-section">
+              <div class="section-header">
+                <h3 class="section-title">
+                  <span class="material-icons section-icon">inventory</span>
+                  Product Management
+                </h3>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Farmer</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for product in products %}
+                  <tr>
+                    <td class="product-name">{{ product.name }}</td>
+                    <td>{{ product.farmer.name }}</td>
+                    <td class="product-category">{{ product.category }}</td>
+                    <td class="product-price">${{ product.price_per_kg }}</td>
+                    <td
+                      class="product-stock {% if product.available_quantity < 10 %}stock-low{% elif product.available_quantity < 50 %}stock-medium{% else %}stock-high{% endif %}"
+                    >
+                      {{ product.available_quantity }} kg
+                    </td>
+                    <td class="action-buttons">
+                      {% if not product.is_approved %}
+                      <form
+                        method="POST"
+                        action="{{ url_for('approve_product', product_id=product.id) }}"
+                        style="display: inline"
+                      >
+                        <input
+                          type="hidden"
+                          name="_csrf_token"
+                          value="{{ csrf_token() }}"
+                        />
+                        <button
+                          type="submit"
+                          class="action-button approve-button"
+                        >
+                          Approve
+                        </button>
+                      </form>
+                      {% else %}
+                      <form
+                        method="POST"
+                        action="{{ url_for('reject_product', product_id=product.id) }}"
+                        style="display: inline"
+                      >
+                        <input
+                          type="hidden"
+                          name="_csrf_token"
+                          value="{{ csrf_token() }}"
+                        />
+                        <button
+                          type="submit"
+                          class="action-button reject-button"
+                        >
+                          Reject
+                        </button>
+                      </form>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Orders Section -->
+          <div id="orders-section" class="section-content hidden">
+            <div class="data-section">
+              <div class="section-header">
+                <h3 class="section-title">
+                  <span class="material-icons section-icon">shopping_cart</span>
+                  Order Management
+                </h3>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Farmer</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for order in all_orders %}
+                  <tr>
+                    <td class="order-id">#{{ order.id }}</td>
+                    <td class="order-customer">
+                      {{ order.customer.username }}
+                    </td>
+                    <td>{{ order.farmer.name }}</td>
+                    <td class="order-amount">₹{{ order.total_amount }}</td>
+                    <td>
+                      <span
+                        class="order-status status-{{ order.status.lower() }}"
+                      >
+                        {{ order.status }}
+                      </span>
+                    </td>
+                    <td>{{ order.order_date.strftime('%Y-%m-%d') }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Flash message animations
+      document.addEventListener("DOMContentLoaded", function () {
+        const flashMessages = document.querySelectorAll(".flash-message");
+        flashMessages.forEach((message, index) => {
+          setTimeout(() => {
+            message.classList.add("show");
+          }, index * 100);
+        });
+
+        // Close flash messages
+        document.querySelectorAll(".close-flash").forEach((button) => {
+          button.addEventListener("click", function () {
+            const message = this.closest(".flash-message");
+            message.classList.remove("show");
+            setTimeout(() => message.remove(), 300);
+          });
+        });
+
+        // Auto-remove flash messages after 5 seconds
+        flashMessages.forEach((message) => {
+          setTimeout(() => {
+            if (message.parentNode) {
+              message.classList.remove("show");
+              setTimeout(() => message.remove(), 300);
+            }
+          }, 5000);
+        });
+      });
+
+      // Section navigation
+      function showSection(sectionName) {
+        // Hide all sections
+        document.querySelectorAll(".section-content").forEach((section) => {
+          section.classList.add("hidden");
+        });
+
+        // Remove active class from all nav items
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+
+        // Show selected section
+        document
+          .getElementById(sectionName + "-section")
+          .classList.remove("hidden");
+
+        // Add active class to clicked nav item
+        event.currentTarget.classList.add("active");
+      }
+    </script>
+  </body>
+</html>
